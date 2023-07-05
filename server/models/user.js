@@ -1,25 +1,28 @@
 const mongoose = require("mongoose");
 const bcrypt = require ('bcryptjs');
+
 const userSchema = new mongoose.Schema({
-    username : String,
+    username : { type: String, required: true},
+    email: { type: String, required: true},
     password : { type: String, required: true}
+
 
 })
 const User = mongoose.model("User",userSchema);
 
-async function register(username, password) {
+async function register(username,email, password) {
     const user =  await getUser(username);
     if(user) throw Error('Username already in use');
-  
    const salt = await bcrypt.genSalt(10);
    const hashed = await bcrypt.hash(password, salt);
   
     const newUser = await User.create({
       username: username,
+      email:email,
       password: hashed
     });
   
-    return newUser;
+    return newUser._doc;
   }
   
   // READ a user

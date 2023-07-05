@@ -4,6 +4,14 @@ const router = express.Router();
 
 // 2. create all routes to access database
 router
+.get('/', async (req, res) => {
+  try {
+    const user = await User.getAllUsers();
+    res.send(user);
+  } catch(err) {
+    res.status(401).send({message: err.message});
+  }
+})
   .post('/login', async (req, res) => {
     try {
       const user = await User.login(req.body.username, req.body.password);
